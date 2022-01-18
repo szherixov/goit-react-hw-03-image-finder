@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Modal from './components/Modal';
 import Searchbar from './components/Searchbar';
 import Button from './components/Button';
+import { TailSpin } from  'react-loader-spinner';
 import ImageGallery from './components/ImageGallery';
 import { productsApi } from './shared/service/Api';
 import './App.css';
@@ -21,9 +22,8 @@ class App extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { query, isLoading, page } = this.state;
-    if (prevState.query !== query || (isLoading && prevState.page < page)) {
+    if (prevState.query !== query || (prevState.page !== page)) {
       this.fetchProducts();
-      this.setState({ finish: false });
     }
   }
 
@@ -43,7 +43,7 @@ class App extends Component {
           isLoading: false,
           error: null,
         };
-        if (data.hits.length < 11) {
+        if (data.hits.length < 12) {
           newState.finish = true;
         }
         if (!data.hits.length) {
@@ -81,7 +81,7 @@ class App extends Component {
         {error && <h1>Impossible to load the pictures!</h1>}
         {!error && <ImageGallery pictures={pictures} onClick={this.handleOpenModal} />}
         {!finish && pictures.length !== 0 && <Button onClick={this.loadMore} />}
-        {/* {isLoading && <Loader />} */}
+        {isLoading && <TailSpin />}
         {showModal && (
           <Modal showModal={this.handleOpenModal}>
             <img src={largeImage} alt={imgTags} />
